@@ -32,7 +32,7 @@ const Article = ({item}) => {
   }, [item.url]);
 
   return (
-    <TouchableOpacity style={styles.articleContainer}>
+    <TouchableOpacity style={styles.articleContainer} onPress={handlePress}>
       <Image source={{uri: item.urlToImage}} style={styles.image} />
       <View style={styles.content}>
         <Text style={styles.contentTitle} numberOfLines={3}>
