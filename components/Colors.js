@@ -1,0 +1,15 @@
+export default {
+  primaryColor: '#f9f9f9',
+  primaryLightColor: '#ffffff',
+  primaryDarkColor: '#c6c6c6',
+  secondaryColor: '#ef5350',
+  secondaryLightColor: '#ff867c',
+  secondaryDarkColor: '#b61827',
+  primaryTextColor: '#000000',
+  secondaryTextColor: '#ffffff',
+  white: '#FFF',
+  lighter: '#F3F3F3',
+  light: '#DAE1E7',
+  dark: '#444',
+  black: '#000',
+};
