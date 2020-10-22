@@ -12,11 +12,11 @@ import Constants from './Constants';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 
 const ArticleConstants = {
-  articleWidth: Constants.screenWidth,
+  articleWidth: Constants.screen.width,
   imageHeight: 80,
   imageWidth: 120,
   containerPaddingVertical: (112 - 80) / 2,
-  contentWidth: Constants.screenWidth - 120 - Constants.screenPadding * 2,
+  contentWidth: Constants.screen.width - 120 - Constants.screenPadding * 2,
   contentPadding: 12,
 };
 
@@ -33,7 +33,10 @@ const Article = ({item}) => {
 
   return (
     <TouchableOpacity style={styles.articleContainer} onPress={handlePress}>
-      <Image source={{uri: item.urlToImage}} style={styles.image} />
+      <Image
+        source={{uri: item.urlToImage ? item.urlToImage : 'abc'}}
+        style={styles.image}
+      />
       <View style={styles.content}>
         <Text style={styles.contentTitle} numberOfLines={3}>
           {item.title}
@@ -79,4 +82,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Article;
+export default React.memo(Article);

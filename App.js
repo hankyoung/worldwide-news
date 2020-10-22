@@ -18,26 +18,56 @@ import {
 import Article from './components/Article';
 import Colors from './components/Colors';
 import Constants from './components/Constants';
-import {fetchData} from './utils/apiUtil';
+
+const pageSize = 10;
 
 const App: () => React$Node = () => {
   const [page, setPage] = useState(1);
   const [isEnd, setEnd] = useState(false);
   const [articles, setArticles] = useState([]);
+  const [refresh, setRefresh] = useState(false);
 
-  useEffect(() => {
-    fetchData(page, articles, setArticles, setEnd);
-  }, []);
+  const fetchData = async () => {
+    console.log(`fetching data, page number: ${page}`);
+    const response = await fetch(
+      `https://newsapi.org/v2/top-headlines?sources=bbc-news,cbc-news,nbc-news,fox-news,mtv-news=&page=${page}&pageSize=${pageSize}&apiKey=48dec07403fe43efbbb1ccae07b1c4c9`,
+    );
+    const jsonData = await response.json();
 
-  const loadMoreData = () => {
-    fetchData(page + 1, articles, setArticles, setEnd);
+    if (jsonData.articles.length == pageSize) {
+      setPage(page + 1);
+      setArticles([...articles, ...jsonData.articles]);
+    } else {
+      setEnd(true);
+    }
   };
 
-  const handleScrollBottom = () => {
-    if (!isEnd) {
-      setPage((page) => page + 1);
-      loadMoreData();
-    }
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (!refresh) return;
+    fetchData();
+  }, [refresh]);
+
+  const _onEndReach = () => {
+    if (isEnd) return;
+    setTimeout(fetchData, 500);
+  };
+
+  const _onRefresh = () => {
+    resetState();
+    setRefresh(true);
+    setTimeout(() => {
+      setRefresh(false);
+    }, 500);
+  };
+
+  const resetState = () => {
+    setPage(1);
+    setArticles([]);
+    setEnd(false);
   };
 
   return (
@@ -53,8 +83,10 @@ const App: () => React$Node = () => {
           data={articles}
           renderItem={({item}) => <Article item={item} />}
           keyExtractor={(item) => item.title}
-          onEndReached={handleScrollBottom}
+          onEndReached={_onEndReach}
           ListFooterComponent={!isEnd && <ListFooter />}
+          refreshing={refresh}
+          onRefresh={_onRefresh}
         />
       </SafeAreaView>
     </>
@@ -84,7 +116,7 @@ const styles = StyleSheet.create({
   },
   flatList: {
     height:
-      Constants.screenHeight -
+      Constants.screen.height -
       StatusBar.currentHeight -
       Constants.screenPadding -
       Constants.headerHeight,
