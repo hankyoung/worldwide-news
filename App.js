@@ -14,6 +14,7 @@ import {
   StatusBar,
   FlatList,
   View,
+  ActivityIndicator,
 } from 'react-native';
 import Article from './components/Article';
 import Colors from './components/Colors';
@@ -57,14 +58,14 @@ const App: () => React$Node = () => {
   };
 
   const _onRefresh = () => {
-    resetState();
+    resetStates();
     setRefresh(true);
     setTimeout(() => {
       setRefresh(false);
-    }, 500);
+    }, 200);
   };
 
-  const resetState = () => {
+  const resetStates = () => {
     setPage(1);
     setArticles([]);
     setEnd(false);
@@ -84,7 +85,14 @@ const App: () => React$Node = () => {
           renderItem={({item}) => <Article item={item} />}
           keyExtractor={(item) => item.title}
           onEndReached={_onEndReach}
-          ListFooterComponent={!isEnd && <ListFooter />}
+          ListFooterComponent={
+            !isEnd && (
+              <ActivityIndicator
+                size="large"
+                color={Colors.secondaryDarkColor}
+              />
+            )
+          }
           refreshing={refresh}
           onRefresh={_onRefresh}
         />
@@ -119,7 +127,8 @@ const styles = StyleSheet.create({
       Constants.screen.height -
       StatusBar.currentHeight -
       Constants.screenPadding -
-      Constants.headerHeight,
+      Constants.headerHeight -
+      60,
   },
   footer: {
     backgroundColor: Colors.secondaryColor,
